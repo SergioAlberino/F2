@@ -43,7 +43,10 @@
 /*=====[Definitions of extern global functions]==============================*/
 
 // Prototipo de funcion de la tarea
-void task_led( void* taskParmPtr );
+void task_led0( void* taskParmPtr );
+void task_led1( void* taskParmPtr );
+void task_led2( void* taskParmPtr );
+void task_led3( void* taskParmPtr );
 void task_tecla( void* taskParmPtr );
 
 /*=====[Definitions of public global variables]==============================*/
@@ -57,20 +60,54 @@ int main( void )
     // ---------- CONFIGURACIONES ------------------------------
     boardConfig();  // Inicializar y configurar la plataforma
 
-    printf( "Ejercicio F1\n" );
+    printf( "Ejercicio F2\n" );
 
     // Crear tareas en freeRTOS
-    res = xTaskCreate (
-              task_led,					// Funcion de la tarea a ejecutar
-              ( const char * )"task_led",	// Nombre de la tarea como String amigable para el usuario
-              configMINIMAL_STACK_SIZE*2,	// Cantidad de stack de la tarea
-              0,							// Parametros de tarea
-              tskIDLE_PRIORITY+1,			// Prioridad de la tarea
-              0							// Puntero a la tarea creada en el sistema
-          );
+    BaseType_t res0,res1,res2,res3;
 
-    // Gestión de errores
-    configASSERT( res == pdPASS );
+    	// Crear tareas en freeRTOS
+        res0 = xTaskCreate (
+                  task_led0,						// Funcion de la tarea a ejecutar
+                  ( const char * )"task_led0",	// Nombre de la tarea como String amigable para el usuario
+                  configMINIMAL_STACK_SIZE*2,	// Cantidad de stack de la tarea
+                  0,							// Parametros de tarea
+                  tskIDLE_PRIORITY+1,			// Prioridad de la tarea
+                  0								// Puntero a la tarea creada en el sistema
+              );
+
+        res1 = xTaskCreate (
+                  task_led1,						// Funcion de la tarea a ejecutar
+                  ( const char * )"task_led1",	// Nombre de la tarea como String amigable para el usuario
+                  configMINIMAL_STACK_SIZE*2,	// Cantidad de stack de la tarea
+                  0,							// Parametros de tarea
+                  tskIDLE_PRIORITY+1,			// Prioridad de la tarea
+                  0								// Puntero a la tarea creada en el sistema
+              );
+
+        res2 = xTaskCreate (
+                  task_led2,						// Funcion de la tarea a ejecutar
+                  ( const char * )"task_led2",	// Nombre de la tarea como String amigable para el usuario
+                  configMINIMAL_STACK_SIZE*2,	// Cantidad de stack de la tarea
+                  0,							// Parametros de tarea
+                  tskIDLE_PRIORITY+1,			// Prioridad de la tarea
+                  0								// Puntero a la tarea creada en el sistema
+              );
+
+        res3 = xTaskCreate (
+                  task_led3,						// Funcion de la tarea a ejecutar
+                  ( const char * )"task_led3",	// Nombre de la tarea como String amigable para el usuario
+                  configMINIMAL_STACK_SIZE*2,	// Cantidad de stack de la tarea
+                  0,							// Parametros de tarea
+                  tskIDLE_PRIORITY+1,			// Prioridad de la tarea
+                  0								// Puntero a la tarea creada en el sistema
+              );
+
+    	// Gestion de errores
+    	if(res0 == pdFAIL||res1 == pdFAIL||res2 == pdFAIL||res3 == pdFAIL)
+    	{
+    		printf( "error" );
+    		while(TRUE);						// VER ESTE LINK: https://pbs.twimg.com/media/BafQje7CcAAN5en.jpg
+    	}
 
     /* inicializo driver de teclas */
     keys_Init();
@@ -83,7 +120,7 @@ int main( void )
     return 0;
 }
 
-void task_led( void* taskParmPtr )
+void task_led0( void* taskParmPtr )
 {
     TickType_t dif_TEC1 =   pdMS_TO_TICKS( 500 );
     int tecla_presionada;
@@ -96,11 +133,11 @@ void task_led( void* taskParmPtr )
 
     	if( key_pressed(TEC1_INDEX ) )
         {
-            dif = get_diff(TEC1_INDEX);
+    		dif_TEC1 = get_diff(TEC1_INDEX);
         }
 
         gpioWrite( LEDB, ON );
-        vTaskDelay(dif_TEC1 );
+        vTaskDelay(dif_TEC1);
         gpioWrite( LEDB, OFF );
 
         // Envia la tarea al estado bloqueado durante xPeriodicity (delay periodico)
@@ -108,9 +145,88 @@ void task_led( void* taskParmPtr )
     }
 }
 
+
+
+void task_led1( void* taskParmPtr )
+{
+    TickType_t dif_TEC2 =   pdMS_TO_TICKS( 500 );
+    int tecla_presionada;
+    TickType_t xPeriodicity = pdMS_TO_TICKS( 1000 ); // Tarea periodica cada 1000 ms
+
+    TickType_t xLastWakeTime = xTaskGetTickCount();
+
+    while( 1 )
+    {
+
+    	if( key_pressed(TEC2_INDEX ) )
+        {
+    		dif_TEC2 = get_diff(TEC2_INDEX);
+        }
+
+        gpioWrite( LED1, ON );
+        vTaskDelay(dif_TEC2);
+        gpioWrite( LED1, OFF );
+
+        // Envia la tarea al estado bloqueado durante xPeriodicity (delay periodico)
+        vTaskDelayUntil( &xLastWakeTime, 2*dif_TEC2);
+    }
+}
+
+void task_led2( void* taskParmPtr )
+{
+    TickType_t dif_TEC3 =   pdMS_TO_TICKS( 500 );
+    int tecla_presionada;
+    TickType_t xPeriodicity = pdMS_TO_TICKS( 1000 ); // Tarea periodica cada 1000 ms
+
+    TickType_t xLastWakeTime = xTaskGetTickCount();
+
+    while( 1 )
+    {
+
+    	if( key_pressed(TEC3_INDEX ) )
+        {
+    		dif_TEC3 = get_diff(TEC3_INDEX);
+        }
+
+        gpioWrite( LED2, ON );
+        vTaskDelay(dif_TEC3);
+        gpioWrite( LED2, OFF );
+
+        // Envia la tarea al estado bloqueado durante xPeriodicity (delay periodico)
+        vTaskDelayUntil( &xLastWakeTime, 2*dif_TEC3);
+    }
+}
+
+void task_led3( void* taskParmPtr )
+{
+    TickType_t dif_TEC4 =   pdMS_TO_TICKS( 500 );
+    int tecla_presionada;
+    TickType_t xPeriodicity = pdMS_TO_TICKS( 1000 ); // Tarea periodica cada 1000 ms
+
+    TickType_t xLastWakeTime = xTaskGetTickCount();
+
+    while( 1 )
+    {
+
+    	if( key_pressed(TEC4_INDEX ) )
+        {
+    		dif_TEC4 = get_diff(TEC4_INDEX);
+        }
+
+        gpioWrite( LED3, ON );
+        vTaskDelay(dif_TEC4);
+        gpioWrite( LED3, OFF );
+
+        // Envia la tarea al estado bloqueado durante xPeriodicity (delay periodico)
+        vTaskDelayUntil( &xLastWakeTime, 2*dif_TEC4);
+    }
+}
+
+
 /* hook que se ejecuta si al necesitar un objeto dinamico, no hay memoria disponible */
 void vApplicationMallocFailedHook()
 {
     printf( "Malloc Failed Hook!\n" );
     configASSERT( 0 );
 }
+

@@ -68,7 +68,7 @@ SemaphoreHandle_t isr_signal;   //almacenara el handle del semaforo creado para 
 void task_tecla( void* taskParmPtr );
 
 /*=====[Implementations of public functions]=================================*/
-TickType_t get_diff( uint32_t index)
+TickType_t get_diff( uint32_t index )
 {
     TickType_t tiempo;
 
@@ -127,6 +127,8 @@ void keys_Init( void )
             keys_data[i].isr_signal    = xSemaphoreCreateBinary();
             keys_data[i].pressed_signal = xSemaphoreCreateBinary();
 
+
+            configASSERT( keys_data[i].isr_signal != NULL );
             configASSERT( keys_data[i].pressed_signal != NULL );
         }
 
